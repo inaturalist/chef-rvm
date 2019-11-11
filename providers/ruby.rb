@@ -129,10 +129,15 @@ def install_ruby_dependencies(rubie)
   when /^ruby-/, /^ree-/, /^rbx-/, /^kiji/
     case node['platform']
       when "debian","ubuntu"
-        pkgs  = %w{ build-essential openssl libreadline6 libreadline6-dev
-                    zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev
-                    sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev
-                    ncurses-dev automake libtool bison ssl-cert pkg-config libgdbm-dev libffi-dev}
+        pkgs  = %w{ build-essential openssl zlib1g zlib1g-dev libyaml-dev
+                    libsqlite3-dev sqlite3 libxml2-dev autoconf libc6-dev
+                    automake libtool bison ssl-cert pkg-config libgdbm-dev
+                    libffi-dev libgmp-dev}
+        if node['platform'] == "ubuntu" && node['platform_version'].to_f >= 18.04
+          pkgs += %w{libssl1.0-dev libxslt1-dev libncurses5-dev libreadline-dev}
+        else
+          pkgs += %w{libssl-dev libxslt-dev ncurses-dev libreadline6 libreadline6-dev}
+        end
         pkgs += %w{ subversion }  if rubie =~ /^ruby-head$/
       when "suse"
         pkgs = %w{ gcc-c++ patch zlib zlib-devel libffi-devel

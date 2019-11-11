@@ -60,7 +60,13 @@ case attributes['platform']
 when "redhat","centos","fedora","scientific","amazon"
   normal['rvm']['install_pkgs']     = %w{sed grep tar gzip bzip2 bash curl git}
 when "debian","ubuntu","suse"
-  normal['rvm']['install_pkgs']     = %w{sed grep tar gzip bzip2 bash curl git-core}
+  packages = %w{sed grep tar gzip bzip2 bash curl}
+  if node['platform'] == 'ubuntu' && node['platform_version'].to_f >= 18.04
+    packages += %w{git}
+  else
+    packages += %w{git-core}
+  end
+  normal['rvm']['install_pkgs']   = packages
 when "gentoo"
   normal['rvm']['install_pkgs']     = %w{git}
 when "mac_os_x", "mac_os_x_server"
